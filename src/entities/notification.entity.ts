@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  TableInheritance,
+  ManyToOne,
+} from 'typeorm';
+import { User } from './user.entity';
 
 export enum NotificationType {
   COMMENT = 'comment',
@@ -9,6 +16,7 @@ export enum NotificationType {
 }
 
 @Entity()
+@TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class Notification {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -21,5 +29,7 @@ export class Notification {
 
   @Column('bigint')
   timestamp: number;
-  sender: any;
+
+  @ManyToOne(() => User)
+  notifiedUser: User;
 }

@@ -1,8 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Meal } from './meal.entity';
+import { User } from './user.entity';
 
-export enum CategoryName {}
-// Define the category names as per your application's needs.
+export enum CategoryName {
+  BEEF = 'Beef',
+  CHICKEN = 'Chicken',
+  PORK = 'Pork',
+  SEAFOOD = 'Seafood',
+  VEGETARIAN = 'Vegetarian',
+  DESSERT = 'Dessert',
+  SALAD = 'Salad',
+  PASTA = 'Pasta',
+  SOUP = 'Soup',
+  APPETIZER = 'Appetizer',
+}
 
 @Entity()
 export class Category {
@@ -17,4 +35,12 @@ export class Category {
 
   @OneToMany(() => Meal, (meal) => meal.category)
   meals: Meal[];
+
+  @ManyToMany(() => User, (user) => user.subscribedCategories)
+  @JoinTable({
+    name: 'user_subscribed_categories',
+    joinColumn: { name: 'category_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  subscribedUsers: User[];
 }
