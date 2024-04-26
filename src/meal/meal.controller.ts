@@ -24,11 +24,11 @@ export class MealController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMealDto: UpdateMealDto) {
-    return this.mealService.update(+id, updateMealDto);
+    return this.mealService.update(id, updateMealDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.mealService.remove(+id);
+    return this.mealService.remove(id);
   }
 }

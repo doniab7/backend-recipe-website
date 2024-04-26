@@ -1,1 +1,2 @@
-export class CreateMealDto {}
+export class CreateMealDto {
+}

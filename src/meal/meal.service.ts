@@ -1,26 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMealDto } from './dto/create-meal.dto';
-import { UpdateMealDto } from './dto/update-meal.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CrudService } from '../common/service/crud.service';
+import { Meal } from '../entities/meal.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class MealService {
-  create(createMealDto: CreateMealDto) {
-    return 'This action adds a new meal';
+export class MealService extends CrudService<Meal> {
+  constructor(
+    @InjectRepository(Meal)
+    mealRepository: Repository<Meal>,
+  ) {
+    super(mealRepository);
   }
+// others methods than the CRUD methods
 
-  findAll() {
-    return `This action returns all meal`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} meal`;
-  }
-
-  update(id: number, updateMealDto: UpdateMealDto) {
-    return `This action updates a #${id} meal`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} meal`;
-  }
 }
