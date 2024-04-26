@@ -11,6 +11,7 @@ import { Ingredient } from './entities/ingredient.entity';
 import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
+import { MealModule } from './meal/meal.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { Notification } from './entities/notification.entity';
       ],
       synchronize: true,
     }),
+    MealModule,
   ],
   controllers: [AppController],
   providers: [AppService],
