@@ -33,6 +33,9 @@ export class Category {
   })
   name: CategoryName;
 
+  @Column('text') // path to image of thumbnail
+  thumbnail: string;
+
   @OneToMany(() => Meal, (meal) => meal.category)
   meals: Meal[];
 

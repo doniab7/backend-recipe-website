@@ -11,7 +11,6 @@ import { Ingredient } from './entities/ingredient.entity';
 import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
-import { CrudService } from './crud/crud.service';
 
 @Module({
   imports: [
@@ -36,7 +35,8 @@ import { CrudService } from './crud/crud.service';
       synchronize: true,
     }),
   ],
+
   controllers: [AppController],
-  providers: [AppService, CrudService],
+  providers: [AppService],
 })
 export class AppModule {}
