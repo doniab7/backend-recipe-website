@@ -12,7 +12,7 @@ import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
 import { MealModule } from './meal/meal.module';
-import { CrudService } from './common/service/crud.service';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -35,8 +35,10 @@ import { CrudService } from './common/service/crud.service';
         Step,
       ],
       synchronize: true,
+      logging: true,
     }),
     MealModule,
+    CategoryModule,
   ],
 
   controllers: [AppController],

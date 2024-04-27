@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CrudService } from '../common/service/crud.service';
-import { Meal } from '../entities/meal.entity';
+import { Category } from '../entities/category.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class MealService extends CrudService<Meal> {
+export class CategoryService extends CrudService<Category> {
   constructor(
-    @InjectRepository(Meal)
-    private mealRepository: Repository<Meal>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
   ) {
-    super(mealRepository);
+    super(categoryRepository);
   }
   // others methods than the CRUD methods
 }

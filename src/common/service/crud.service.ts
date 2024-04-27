@@ -43,5 +43,4 @@ export class CrudService<Entity extends HasId> {
   findOne(id): Promise<Entity> {
     return this.repository.findOneBy({ id });
   }
-
 }
