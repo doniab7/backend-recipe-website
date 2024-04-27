@@ -32,6 +32,9 @@ export class Meal {
   @Column('text')
   region: string;
 
+  @Column('text') // path to image of thumbnail
+  thumbnail: string;
+
   @ManyToOne(() => Category, (category) => category.meals)
   category: Category;
 

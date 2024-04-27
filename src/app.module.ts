@@ -38,6 +38,7 @@ import { CrudService } from './common/service/crud.service';
     }),
     MealModule,
   ],
+
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common' ;
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DeepPartial, Repository, UpdateResult } from 'typeorm';
 import { HasId } from '../interface/hasId.interface';
 
@@ -43,4 +43,5 @@ export class CrudService<Entity extends HasId> {
   findOne(id): Promise<Entity> {
     return this.repository.findOneBy({ id });
   }
+
 }
