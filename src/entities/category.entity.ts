@@ -12,7 +12,6 @@ import { User } from './user.entity';
 export enum CategoryName {
   BEEF = 'Beef',
   CHICKEN = 'Chicken',
-  PORK = 'Pork',
   SEAFOOD = 'Seafood',
   VEGETARIAN = 'Vegetarian',
   DESSERT = 'Dessert',
