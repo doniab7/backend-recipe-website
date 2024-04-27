@@ -11,16 +11,18 @@ import { Ingredient } from './entities/ingredient.entity';
 import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
+import { UserModule } from './user/user.module';
+require('dotenv').config();
 
-@Module({
+ @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root',
-      password: 'sql123',
-      database: 'recipe',
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: [
         User,
         Meal,
@@ -32,8 +34,8 @@ import { Notification } from './entities/notification.entity';
         Ingredient,
         Step,
       ],
-      synchronize: true,
-    }),
+     }),
+    UserModule,
   ],
 
   controllers: [AppController],
