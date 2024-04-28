@@ -15,6 +15,8 @@ import { UserSubscribeDto } from './dto/user-subscription';
 import { LoginCredentialsDto } from './dto/login-user';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileInterceptor } from 'src/interceptor/fileInterceptor.interceptor';
+import { User } from './user.decorator';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -29,7 +31,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Post()
+  @Post('register')
   register(@Body() userData: UserSubscribeDto) {
     return this.userService.register(userData);
   }
@@ -54,10 +56,17 @@ export class UserController {
   @Post('profile/photo')
   @UseInterceptors(
     FileInterceptor('photo'),
-    new CustomFileInterceptor(['image/png', 'image/jpeg'],50000),
+    new CustomFileInterceptor(['image/png', 'image/jpeg'], 50000),
   )
-  async uploadProfilePhoto(@UploadedFile() file: Express.Multer.File) {
+  async uploadProfilePhoto(
+    @UploadedFile() file: Express.Multer.File,
+    @User() user,
+  ) {
     const fileName = await this.userService.uploadFile(file, 'user');
+    var updateuser = new UpdateUserDto();
+    updateuser.ImageProfile = fileName;
+    this.userService.update(user.email, updateuser);
+
     return { fileName };
   }
 }

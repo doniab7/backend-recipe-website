@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,7 +20,7 @@ import { GraphqlModule } from './grapgql/graphql.module';
 require('dotenv').config();
 import { MealModule } from './meal/meal.module';
 import { CategoryModule } from './category/category.module';
-
+import { AuthMiddleware } from './user/auth.middleware';
 
 @Module({
   imports: [
@@ -42,7 +42,6 @@ import { CategoryModule } from './category/category.module';
         Ingredient,
         Step,
       ],
-       synchronize: true,
       logging: true,
     }),
     UserModule,
@@ -57,4 +56,8 @@ import { CategoryModule } from './category/category.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('user/profile/photo');
+  }
+}

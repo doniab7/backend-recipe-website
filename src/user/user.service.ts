@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-user';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -49,11 +50,11 @@ export class UserService extends CrudService<User> {
   }
 
   async login(credentials: LoginCredentialsDto) {
-    const { username, password } = credentials;
+    const { email, password } = credentials;
     const user = await this.userRepository
       .createQueryBuilder('user')
-      .where('user.username = :username or user.email = :username', {
-        username,
+      .where('user.email = :email', {
+        email,
       })
       .getOne();
     if (!user) throw new NotFoundException('Compte inexistant');
@@ -68,7 +69,7 @@ export class UserService extends CrudService<User> {
         access_token: jwt,
       };
     } else {
-      throw new NotFoundException('username ou password erronée');
+      throw new NotFoundException('password erroné');
     }
   }
 
@@ -79,5 +80,18 @@ export class UserService extends CrudService<User> {
   async findByUsername(username: string) {
     return this.userRepository.findOneBy({ username: username });
   }
-  async Update() {}
+  async update(email: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.username = updateUserDto.username ?? user.username;
+    user.email = updateUserDto.email ?? user.email;
+    user.ImageProfile = updateUserDto.ImageProfile ?? user.ImageProfile;
+
+    await this.userRepository.save(user);
+
+    return user;
+  }
 }
