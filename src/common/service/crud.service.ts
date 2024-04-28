@@ -3,10 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DeepPartial, Repository, UpdateResult } from 'typeorm';
+import { DeepPartial, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { HasId } from '../interface/hasId.interface';
 import { extname } from 'path';
 import { createReadStream, createWriteStream } from 'fs';
+
 @Injectable()
 export class CrudService<Entity extends HasId> {
   constructor(private repository: Repository<Entity>) {}
@@ -26,13 +27,14 @@ export class CrudService<Entity extends HasId> {
     return this.repository.save(entity);
   }
 
-  async remove(id: string): Promise<UpdateResult> {
-    const result = await this.repository.softDelete(id);
+  async remove(id: string): Promise<DeleteResult> {
+    const result = await this.repository.delete(id);
     if (!result.affected) {
       throw new NotFoundException('entity Not Found');
     }
     return result;
   }
+
   async restore(id: string): Promise<UpdateResult> {
     const result = await this.repository.restore(id);
     if (!result.affected) {

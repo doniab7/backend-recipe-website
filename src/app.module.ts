@@ -17,8 +17,10 @@ import { join } from 'path';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphqlModule } from './grapgql/graphql.module';
-
 require('dotenv').config();
+import { MealModule } from './meal/meal.module';
+import { CategoryModule } from './category/category.module';
+
 
 @Module({
   imports: [
@@ -40,12 +42,16 @@ require('dotenv').config();
         Ingredient,
         Step,
       ],
+       synchronize: true,
+      logging: true,
     }),
     UserModule,
     GraphqlModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public', 'uploads'), // Spécifiez le chemin vers le répertoire des fichiers statiques
     }),
+    MealModule,
+    CategoryModule,
   ],
 
   controllers: [AppController],
