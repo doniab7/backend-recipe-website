@@ -1,10 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { EntityManager } from 'typeorm';
 import { seedCategories } from './category/category.seeder';
 
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useStaticAssets('public/uploads/user');
+  app.useStaticAssets('public/uploads/recipe');
   app.enableCors();
 
   //seeding categories

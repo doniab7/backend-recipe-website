@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DeepPartial, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { HasId } from '../interface/hasId.interface';
+import { extname } from 'path';
+import { createReadStream, createWriteStream } from 'fs';
 
 @Injectable()
 export class CrudService<Entity extends HasId> {
@@ -43,5 +49,22 @@ export class CrudService<Entity extends HasId> {
 
   findOne(id): Promise<Entity> {
     return this.repository.findOneBy({ id });
+  }
+  async uploadFile(
+    file: Express.Multer.File,
+    destination: string,
+  ): Promise<string> {
+    if (!file) {
+      throw new BadRequestException('Aucun fichier trouvé');
+    }
+
+    const fileName = `${Date.now()}${extname(file.originalname)}`;
+    const uploadPath = `public/uploads/${destination}/${fileName}`;
+    console.log(fileName)
+    const reader = createReadStream(file.path);
+    const writer = createWriteStream(uploadPath);
+    reader.pipe(writer);
+
+    return fileName;
   }
 }

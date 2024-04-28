@@ -6,25 +6,39 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
+
+import { Exclude } from '@nestjs/class-transformer';
+
 import { Meal } from './meal.entity';
 import { Notification } from './notification.entity';
 import { Comment } from './comment.entity';
 import { Category } from './category.entity';
+import { TimestampEntites } from 'src/common/entities/TimestampEntites.entities';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity()
-export class User {
+@ObjectType()
+export class User extends TimestampEntites {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => String)
   id: string;
 
   @Column()
+  @Field(() => String)
   username: string;
 
   @Column()
+  @Field(() => String)
   email: string;
 
   @Column()
   password: string;
-
+  @Column({ default: '' })
+  @Field(() => String)
+  ImageProfile: string;
+  @Column()
+  @Exclude()
+  salt: string;
   @OneToMany(() => Meal, (meal) => meal.user)
   meals: Meal[];
 

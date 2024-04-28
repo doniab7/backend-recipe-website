@@ -11,8 +11,16 @@ import { Ingredient } from './entities/ingredient.entity';
 import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
+import { UserModule } from './user/user.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphqlModule } from './grapgql/graphql.module';
+require('dotenv').config();
 import { MealModule } from './meal/meal.module';
 import { CategoryModule } from './category/category.module';
+
 
 @Module({
   imports: [
@@ -20,9 +28,9 @@ import { CategoryModule } from './category/category.module';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root',
-      password: 'sql123',
-      database: 'recipe',
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: [
         User,
         Meal,
@@ -34,8 +42,13 @@ import { CategoryModule } from './category/category.module';
         Ingredient,
         Step,
       ],
-      synchronize: true,
+       synchronize: true,
       logging: true,
+    }),
+    UserModule,
+    GraphqlModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public', 'uploads'), // Spécifiez le chemin vers le répertoire des fichiers statiques
     }),
     MealModule,
     CategoryModule,
