@@ -22,10 +22,10 @@ import { UserResolver } from './user.resolver';
       },
     }),
     MulterModule.register({
-      dest: '.public/uploads/user',
+      dest: 'public/uploads/user',
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtStrategy,UserResolver],
+  providers: [UserService, JwtStrategy, UserResolver],
 })
 export class UserModule {}
