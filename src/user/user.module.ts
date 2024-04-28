@@ -6,6 +6,7 @@ import { User } from 'src/entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/passport-jwt.strategy';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -19,8 +20,11 @@ import { JwtStrategy } from './strategy/passport-jwt.strategy';
         expiresIn: 3600,
       },
     }),
+    MulterModule.register({
+      dest: './uploads/user',
+    }),
   ],
   controllers: [UserController],
-  providers: [UserService,JwtStrategy],
+  providers: [UserService, JwtStrategy],
 })
 export class UserModule {}

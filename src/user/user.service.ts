@@ -31,9 +31,11 @@ export class UserService extends CrudService<User> {
     if (existingUser) {
       throw new ConflictException('Cet e-mail est déjà utilisé');
     }
+    console.log('haaaaaaaaaaa', existingUser);
     const user = this.userRepository.create({
       ...userData,
     });
+    user.ImageProfile = '';
     user.salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(user.password, user.salt);
     try {
@@ -74,29 +76,12 @@ export class UserService extends CrudService<User> {
     }
   }
 
-  async uploadProfilePhoto(file: Express.Multer.File): Promise<string> {
-    if (!file) {
-      throw new BadRequestException('No file uploaded');
-    }
+  async findByEmail(email: string) {
+    return this.userRepository.findOneBy({ email: email });
+  }
 
-    const fileExtension = extname(file.originalname);
-    const fileName = `${fileExtension}`;
 
-    // Définir l'emplacement de stockage et le nom du fichier
-    const storage = diskStorage({
-      destination: './uploads/profile-photos',
-      filename: (req, file, cb) => cb(null, fileName),
-    });
-
-    // Gérer l'upload du fichier
-    const upload = multer({ storage }).single('profilePhoto');
-    upload(req, res, (err) => {
-      if (err) {
-        throw new BadRequestException('Error uploading file');
-      }
-    });
-
-    // Retourner le chemin du fichier uploadé
-    return fileName;
+  async findByUsername(username: string) {
+    return this.userRepository.findOneBy({ username: username });
   }
 }

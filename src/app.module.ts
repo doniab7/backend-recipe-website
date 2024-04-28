@@ -12,6 +12,8 @@ import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
 import { UserModule } from './user/user.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path'; 
 require('dotenv').config();
 
  @Module({
@@ -36,6 +38,10 @@ require('dotenv').config();
       ],
      }),
     UserModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public', 'uploads'), // Spécifiez le chemin vers le répertoire des fichiers statiques
+    }),
+    
   ],
 
   controllers: [AppController],
