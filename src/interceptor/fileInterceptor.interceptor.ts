@@ -22,7 +22,9 @@ export class CustomFileInterceptor implements NestInterceptor {
     }
 
     if (!this.allowedMimeTypes.includes(file.mimetype)) {
-      throw new BadRequestException('Le fichier doit être de type PNG.');
+      throw new BadRequestException(
+        'Le fichier doit être de type PNG ou GPEG.',
+      );
     }
 
     if (file.size > this.maxSize) {

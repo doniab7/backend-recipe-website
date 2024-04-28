@@ -22,7 +22,7 @@ import { UserResolver } from './user.resolver';
       },
     }),
     MulterModule.register({
-      dest: './uploads/user',
+      dest: '.public/uploads/user',
     }),
   ],
   controllers: [UserController],

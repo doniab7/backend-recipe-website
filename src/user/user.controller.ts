@@ -54,10 +54,9 @@ export class UserController {
   @Post('profile/photo')
   @UseInterceptors(
     FileInterceptor('photo'),
-    new CustomFileInterceptor(['image/png', 'image/jpeg'], 1000),
+    new CustomFileInterceptor(['image/png', 'image/jpeg'],50000),
   )
   async uploadProfilePhoto(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
     const fileName = await this.userService.uploadFile(file, 'user');
     return { fileName };
   }
