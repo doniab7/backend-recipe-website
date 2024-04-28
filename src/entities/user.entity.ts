@@ -14,21 +14,27 @@ import { Notification } from './notification.entity';
 import { Comment } from './comment.entity';
 import { Category } from './category.entity';
 import { TimestampEntites } from 'src/common/entities/TimestampEntites.entities';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity()
+@ObjectType()
 export class User extends TimestampEntites {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => String)
   id: string;
 
   @Column()
+  @Field(() => String)
   username: string;
 
   @Column()
+  @Field(() => String)
   email: string;
 
   @Column()
   password: string;
-  @Column()
+  @Column({ default: '' })
+  @Field(() => String)
   ImageProfile: string;
   @Column()
   @Exclude()

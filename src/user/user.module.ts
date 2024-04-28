@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/passport-jwt.strategy';
 import { MulterModule } from '@nestjs/platform-express';
+import { UserResolver } from './user.resolver';
 
 @Module({
   imports: [
@@ -25,6 +26,6 @@ import { MulterModule } from '@nestjs/platform-express';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtStrategy],
+  providers: [UserService, JwtStrategy,UserResolver],
 })
 export class UserModule {}

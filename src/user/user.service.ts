@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -12,8 +11,6 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-user';
-import { extname } from 'path';
-import multer, { diskStorage } from 'multer';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -31,7 +28,6 @@ export class UserService extends CrudService<User> {
     if (existingUser) {
       throw new ConflictException('Cet e-mail est déjà utilisé');
     }
-    console.log('haaaaaaaaaaa', existingUser);
     const user = this.userRepository.create({
       ...userData,
     });
@@ -80,8 +76,8 @@ export class UserService extends CrudService<User> {
     return this.userRepository.findOneBy({ email: email });
   }
 
-
   async findByUsername(username: string) {
     return this.userRepository.findOneBy({ username: username });
   }
+  async Update() {}
 }
