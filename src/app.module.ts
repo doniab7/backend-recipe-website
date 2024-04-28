@@ -12,10 +12,6 @@ import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
 import { UserModule } from './user/user.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphqlModule } from './grapgql/graphql.module';
 require('dotenv').config();
 import { MealModule } from './meal/meal.module';
@@ -46,9 +42,6 @@ import { AuthMiddleware } from './user/auth.middleware';
     }),
     UserModule,
     GraphqlModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public', 'uploads'), // Spécifiez le chemin vers le répertoire des fichiers statiques
-    }),
     MealModule,
     CategoryModule,
   ],
