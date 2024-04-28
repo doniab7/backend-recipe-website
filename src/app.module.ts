@@ -38,6 +38,7 @@ import { AuthMiddleware } from './user/auth.middleware';
         Ingredient,
         Step,
       ],
+      synchronize : true ,
       logging: true,
     }),
     UserModule,
