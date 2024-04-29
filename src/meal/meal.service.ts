@@ -5,6 +5,7 @@ import { Meal } from '../entities/meal.entity';
 import { DeepPartial, Repository } from 'typeorm';
 import { Ingredient } from 'src/entities/ingredient.entity';
 import { Step } from 'src/entities/step.entity';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class MealService extends CrudService<Meal> {
@@ -15,11 +16,18 @@ export class MealService extends CrudService<Meal> {
     private ingredientRepository: Repository<Ingredient>,
     @InjectRepository(Step)
     private stepRepository: Repository<Step>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {
     super(mealRepository);
   }
 
-  async create(entity: DeepPartial<Meal>): Promise<Meal> {
+  async createMeal(entity: DeepPartial<Meal>, userid): Promise<Meal> {
+    const user = await this.userRepository.findOneBy({ id: userid });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    entity.user = user;
     await this.ingredientRepository.save(entity.ingredients);
     await this.stepRepository.save(entity.steps);
     return this.mealRepository.save(entity);

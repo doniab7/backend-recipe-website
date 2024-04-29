@@ -19,8 +19,11 @@ export class MealController {
   constructor(private readonly mealService: MealService) {}
 
   @Post('create')
-  create(@Body() createMealDto: CreateMealDto) {
-    return this.mealService.create(createMealDto);
+  create(@Body() createMealDto: CreateMealDto, @User() user) {
+    if (user === undefined) {
+      throw new UnauthorizedException('Authentication header is missing');
+    }
+    return this.mealService.createMeal(createMealDto, user.userid);
   }
 
   @Get()

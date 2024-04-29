@@ -55,6 +55,6 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes('user/profile/photo', 'meal/action' /*, 'meal/create'*/);
+      .forRoutes('user/profile/photo', 'meal/action', 'meal/create');
   }
 }
