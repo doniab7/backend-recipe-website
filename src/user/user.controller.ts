@@ -49,6 +49,7 @@ export class UserController {
     return this.userService.login(credentials);
   }
 
+  //TODO: add the authentication token - the user is the only one that can delete his account
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.userService.remove(id);
