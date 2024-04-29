@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CrudService } from '../common/service/crud.service';
 import { Meal } from '../entities/meal.entity';
@@ -25,6 +25,19 @@ export class MealService extends CrudService<Meal> {
     return this.mealRepository.save(entity);
   }
 
+  async update(id: string, updateDto: DeepPartial<Meal>): Promise<Meal> {
+    const entity = await this.mealRepository.preload({
+      id,
+      ...updateDto,
+    });
+    if (!entity) {
+      throw new NotFoundException('entity Not Found');
+    }
+    await this.ingredientRepository.save(entity.ingredients);
+    await this.stepRepository.save(entity.steps);
+    return this.mealRepository.save(entity);
+  }
+
   findOne(id): Promise<Meal> {
     return this.mealRepository
       .createQueryBuilder('meal')
@@ -33,5 +46,13 @@ export class MealService extends CrudService<Meal> {
       .leftJoinAndSelect('meal.steps', 'step')
       .where('meal.id = :id', { id })
       .getOne();
+  }
+
+  async findByCategory(categoryname: string) {
+    return await this.mealRepository
+      .createQueryBuilder('meal')
+      .leftJoinAndSelect('meal.category', 'category')
+      .where('category.name = :categoryname', { categoryname })
+      .getMany();
   }
 }

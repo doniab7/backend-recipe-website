@@ -39,4 +39,9 @@ export class MealController {
   remove(@Param('id') id: string) {
     return this.mealService.remove(id);
   }
+
+  @Get('category/:categoryname')
+  findByCategory(@Param('categoryname') categoryname: string) {
+    return this.mealService.findByCategory(categoryname);
+  }
 }
