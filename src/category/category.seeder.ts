@@ -2,35 +2,35 @@ import { EntityManager } from 'typeorm';
 import { Category, CategoryName } from '../entities/category.entity';
 
 const categorySeedData = [
-  { name: CategoryName.BEEF, thumbnail: '/public/assets/categories/beef.jpg' },
+  { name: CategoryName.BEEF, thumbnail: '/assets/categories/beef.jpg' },
   {
     name: CategoryName.CHICKEN,
-    thumbnail: '/public/assets/categories/chicken.jpg',
+    thumbnail: '/assets/categories/chicken.jpg',
   },
   {
     name: CategoryName.SEAFOOD,
-    thumbnail: '/public/assets/categories/seafood.jpg',
+    thumbnail: '/assets/categories/seafood.jpg',
   },
   {
     name: CategoryName.VEGETARIAN,
-    thumbnail: '/public/assets/categories/vegetarian.jpg',
+    thumbnail: '/assets/categories/vegetarian.jpg',
   },
   {
     name: CategoryName.DESSERT,
-    thumbnail: '/public/assets/categories/dessert.jpg',
+    thumbnail: '/assets/categories/dessert.jpg',
   },
   {
     name: CategoryName.SALAD,
-    thumbnail: '/public/assets/categories/salad.jpg',
+    thumbnail: '/assets/categories/salad.jpg',
   },
   {
     name: CategoryName.PASTA,
-    thumbnail: '/public/assets/categories/pasta.jpg',
+    thumbnail: '/assets/categories/pasta.jpg',
   },
-  { name: CategoryName.SOUP, thumbnail: '/public/assets/categories/soup.jpg' },
+  { name: CategoryName.SOUP, thumbnail: '/assets/categories/soup.jpg' },
   {
     name: CategoryName.APPETIZER,
-    thumbnail: '/public/assets/categories/appetizer.jpg',
+    thumbnail: '/assets/categories/appetizer.jpg',
   },
 ];
 

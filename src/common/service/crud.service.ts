@@ -60,7 +60,7 @@ export class CrudService<Entity extends HasId> {
 
     const fileName = `${Date.now()}${extname(file.originalname)}`;
     const uploadPath = `public/uploads/${destination}/${fileName}`;
-    console.log(fileName)
+    console.log(fileName);
     const reader = createReadStream(file.path);
     const writer = createWriteStream(uploadPath);
     reader.pipe(writer);

@@ -3,10 +3,8 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
-  UseGuards,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -35,6 +33,7 @@ export class UserController {
   register(@Body() userData: UserSubscribeDto) {
     return this.userService.register(userData);
   }
+
   @Get('email/:email')
   async findByEmail(@Param() params) {
     return this.userService.findByEmail(params.email);
@@ -49,21 +48,23 @@ export class UserController {
   login(@Body() credentials: LoginCredentialsDto) {
     return this.userService.login(credentials);
   }
+
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.userService.remove(id);
   }
+
   @Post('profile/photo')
   @UseInterceptors(
     FileInterceptor('photo'),
-    new CustomFileInterceptor(['image/png', 'image/jpeg'], 50000),
+    new CustomFileInterceptor(['image/png', 'image/jpeg'], 1000000),
   )
   async uploadProfilePhoto(
     @UploadedFile() file: Express.Multer.File,
     @User() user,
   ) {
     const fileName = await this.userService.uploadFile(file, 'user');
-    var updateuser = new UpdateUserDto();
+    const updateuser = new UpdateUserDto();
     updateuser.ImageProfile = fileName;
     this.userService.update(user.email, updateuser);
 

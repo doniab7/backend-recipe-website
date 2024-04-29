@@ -13,12 +13,12 @@ import { Meal } from './meal.entity';
 import { Notification } from './notification.entity';
 import { Comment } from './comment.entity';
 import { Category } from './category.entity';
-import { TimestampEntites } from 'src/common/entities/TimestampEntites.entities';
+import { Timestamp } from 'src/common/entities/timestamp.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity()
 @ObjectType()
-export class User extends TimestampEntites {
+export class User extends Timestamp {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
