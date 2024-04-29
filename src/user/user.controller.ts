@@ -33,6 +33,7 @@ export class UserController {
   register(@Body() userData: UserSubscribeDto) {
     return this.userService.register(userData);
   }
+
   @Get('email/:email')
   async findByEmail(@Param() params) {
     return this.userService.findByEmail(params.email);
@@ -47,10 +48,12 @@ export class UserController {
   login(@Body() credentials: LoginCredentialsDto) {
     return this.userService.login(credentials);
   }
+
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.userService.remove(id);
   }
+
   @Post('profile/photo')
   @UseInterceptors(
     FileInterceptor('photo'),

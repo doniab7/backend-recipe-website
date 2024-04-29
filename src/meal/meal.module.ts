@@ -6,9 +6,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Ingredient } from 'src/entities/ingredient.entity';
 import { Step } from 'src/entities/step.entity';
 import { User } from 'src/entities/user.entity';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Meal, Ingredient, Step, User])],
+  imports: [
+    TypeOrmModule.forFeature([Meal, Ingredient, Step, User]),
+    MulterModule.register({
+      dest: 'public/uploads/meal',
+    }),
+  ],
   controllers: [MealController],
   providers: [MealService],
 })
