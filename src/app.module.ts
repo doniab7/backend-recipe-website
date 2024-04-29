@@ -13,10 +13,11 @@ import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
 import { UserModule } from './user/user.module';
 import { GraphqlModule } from './grapgql/graphql.module';
-require('dotenv').config();
 import { MealModule } from './meal/meal.module';
 import { CategoryModule } from './category/category.module';
 import { AuthMiddleware } from './user/auth.middleware';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Module({
   imports: [
@@ -38,7 +39,7 @@ import { AuthMiddleware } from './user/auth.middleware';
         Ingredient,
         Step,
       ],
-      synchronize : true ,
+      synchronize: true,
       logging: true,
     }),
     UserModule,

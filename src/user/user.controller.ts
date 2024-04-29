@@ -3,10 +3,8 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
-  UseGuards,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -63,7 +61,7 @@ export class UserController {
     @User() user,
   ) {
     const fileName = await this.userService.uploadFile(file, 'user');
-    var updateuser = new UpdateUserDto();
+    const updateuser = new UpdateUserDto();
     updateuser.ImageProfile = fileName;
     this.userService.update(user.email, updateuser);
 

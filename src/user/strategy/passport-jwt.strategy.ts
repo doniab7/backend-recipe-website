@@ -5,7 +5,8 @@ import { PayloadInterface } from '../../interfaces/payload.interface';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,21 +17,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: "BennAppetit",
+      secretOrKey: 'BennAppetit',
     });
   }
 
   async validate(payload: PayloadInterface) {
-      const user = await this.userRepository.findOneBy({
-        username: payload.username,
+    const user = await this.userRepository.findOneBy({
+      username: payload.username,
     });
-    
+
     if (user) {
       delete user.salt;
       delete user.password;
       return user;
     } else {
-       throw new UnauthorizedException();
+      throw new UnauthorizedException();
     }
   }
 }

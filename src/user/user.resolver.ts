@@ -10,15 +10,15 @@ export class UserResolver {
   async findAllUsers(): Promise<User[]> {
     return this.userService.findAll();
   }
-  @Query(()=>User)
+  @Query(() => User)
   async findUserById(@Args('id') id: string): Promise<User> {
     return this.userService.findOne(id);
   }
-  @Query(()=>User)
+  @Query(() => User)
   async findUserByEmail(@Args('email') email: string): Promise<User> {
     return this.userService.findByEmail(email);
   }
-  @Query(()=>User)
+  @Query(() => User)
   async findUserByUsername(@Args('username') username: string): Promise<User> {
     return this.userService.findByUsername(username);
   }
