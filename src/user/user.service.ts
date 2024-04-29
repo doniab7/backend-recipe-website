@@ -62,6 +62,7 @@ export class UserService extends CrudService<User> {
     const hashedPassword = await bcrypt.hash(password, user.salt);
     if (hashedPassword === user.password) {
       const payload = {
+        userid: user.id,
         username: user.username,
         email: user.email,
       };

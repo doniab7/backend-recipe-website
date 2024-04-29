@@ -54,7 +54,7 @@ export class UserController {
   @Post('profile/photo')
   @UseInterceptors(
     FileInterceptor('photo'),
-    new CustomFileInterceptor(['image/png', 'image/jpeg'], 50000),
+    new CustomFileInterceptor(['image/png', 'image/jpeg'], 1000000),
   )
   async uploadProfilePhoto(
     @UploadedFile() file: Express.Multer.File,

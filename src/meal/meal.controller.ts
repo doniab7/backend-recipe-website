@@ -6,10 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { MealService } from './meal.service';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
+import { User } from 'src/user/user.decorator';
 
 @Controller('meal')
 export class MealController {
@@ -31,12 +34,34 @@ export class MealController {
   }
 
   @Patch('action/:id')
-  update(@Param('id') id: string, @Body() updateMealDto: UpdateMealDto) {
+  async update(
+    @Param('id') id: string,
+    @User() user,
+    @Body() updateMealDto: UpdateMealDto,
+  ) {
+    const meal = await this.mealService.findOne(id);
+    if (!meal) {
+      throw new NotFoundException('Meal not found');
+    }
+    if (user.userid !== meal.user.id) {
+      throw new UnauthorizedException(
+        'Unauthorized: User does not have permission to update this meal',
+      );
+    }
     return this.mealService.update(id, updateMealDto);
   }
 
   @Delete('action/:id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @User() user) {
+    const meal = await this.mealService.findOne(id);
+    if (!meal) {
+      throw new NotFoundException('Meal not found');
+    }
+    if (user.userid !== meal.user.id) {
+      throw new UnauthorizedException(
+        'Unauthorized: User does not have permission to delete this meal',
+      );
+    }
     return this.mealService.remove(id);
   }
 
