@@ -22,6 +22,7 @@ export class UserService extends CrudService<User> {
   ) {
     super(userRepository);
   }
+
   async register(userData: UserSubscribeDto) {
     const existingUser = await this.userRepository.findOneBy({
       email: userData.email,

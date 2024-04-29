@@ -42,6 +42,7 @@ export class MealService extends CrudService<Meal> {
     return this.mealRepository
       .createQueryBuilder('meal')
       .leftJoinAndSelect('meal.category', 'category')
+      .leftJoinAndSelect('meal.user', 'user')
       .leftJoinAndSelect('meal.ingredients', 'ingredient')
       .leftJoinAndSelect('meal.steps', 'step')
       .where('meal.id = :id', { id })
@@ -53,6 +54,14 @@ export class MealService extends CrudService<Meal> {
       .createQueryBuilder('meal')
       .leftJoinAndSelect('meal.category', 'category')
       .where('category.name = :categoryname', { categoryname })
+      .getMany();
+  }
+
+  async findByUser(userid: string) {
+    return await this.mealRepository
+      .createQueryBuilder('meal')
+      .leftJoinAndSelect('meal.user', 'user')
+      .where('user.id = :userid', { userid })
       .getMany();
   }
 }
