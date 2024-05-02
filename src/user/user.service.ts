@@ -1,5 +1,8 @@
 import {
   ConflictException,
+  HttpCode,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -35,12 +38,12 @@ export class UserService extends CrudService<User> {
     });
     user.ImageProfile = '';
     user.salt = await bcrypt.genSalt();
-    user.password = await bcrypt.hash(user.password, user.salt);
+    user.password = await bcrypt.hash(userData.password, user.salt);
     try {
       await this.userRepository.save(user);
     } catch (e) {
-      throw new ConflictException(
-        `Le username et le email doivent être unique`,
+      throw new HttpException(
+        e,HttpStatus.BAD_REQUEST
       );
     }
     return {
@@ -62,7 +65,7 @@ export class UserService extends CrudService<User> {
     const hashedPassword = await bcrypt.hash(password, user.salt);
     if (hashedPassword === user.password) {
       const payload = {
-        userid: user.id,
+        sub: user.id,
         username: user.username,
         email: user.email,
       };

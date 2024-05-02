@@ -39,8 +39,7 @@ import { AuthMiddleware } from './user/auth.middleware';
         Step,
       ],
       synchronize: true,
-      logging: true,
-      synchronize:true,
+      logging: true
     }),
     UserModule,
     GraphqlModule,
@@ -52,14 +51,4 @@ import { AuthMiddleware } from './user/auth.middleware';
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes(
-        'user/profile/photo',
-        'meal/action',
-        'meal/create',
-        'meal/photo',
-      );
-  }
 }

@@ -29,11 +29,6 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Post('register')
-  register(@Body() userData: UserSubscribeDto) {
-    return this.userService.register(userData);
-  }
-
   @Get('email/:email')
   async findByEmail(@Param() params) {
     return this.userService.findByEmail(params.email);
@@ -42,6 +37,11 @@ export class UserController {
   @Get('username/:username')
   async findByUsername(@Param() params) {
     return this.userService.findByUsername(params.username);
+  }
+
+  @Post('register')
+  register(@Body() userData: UserSubscribeDto) {
+    return this.userService.register(userData);
   }
 
   @Post('login')
