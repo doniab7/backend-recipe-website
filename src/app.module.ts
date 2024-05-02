@@ -13,11 +13,10 @@ import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
 import { UserModule } from './user/user.module';
 import { GraphqlModule } from './grapgql/graphql.module';
+require('dotenv').config();
 import { MealModule } from './meal/meal.module';
 import { CategoryModule } from './category/category.module';
 import { AuthMiddleware } from './user/auth.middleware';
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 @Module({
   imports: [
@@ -40,7 +39,7 @@ dotenv.config();
         Step,
       ],
       synchronize: true,
-      logging: true,
+      logging: true
     }),
     UserModule,
     GraphqlModule,
@@ -52,14 +51,4 @@ dotenv.config();
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes(
-        'user/profile/photo',
-        'meal/action',
-        'meal/create',
-        'meal/photo',
-      );
-  }
 }
