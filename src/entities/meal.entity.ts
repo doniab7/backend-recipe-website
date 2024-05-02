@@ -32,7 +32,7 @@ export class Meal {
   @Column('text')
   region: string;
 
-  @Column('text') // path to image of thumbnail
+  @Column('text')
   thumbnail: string;
 
   @ManyToOne(() => Category, (category) => category.meals)
@@ -44,7 +44,7 @@ export class Meal {
   @OneToMany(() => Step, (step) => step.meal)
   steps: Step[];
 
-  @ManyToOne(() => User, (user) => user.meals)
+  @ManyToOne(() => User, (user) => user.meals, { onDelete: 'CASCADE' })
   user: User;
 
   @OneToMany(() => Comment, (comment) => comment.meal)
