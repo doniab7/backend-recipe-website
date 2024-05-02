@@ -10,24 +10,26 @@ import {
   UnauthorizedException,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { MealService } from './meal.service';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
-import { User } from 'src/user/user.decorator';
+import { User } from '../user/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CustomFileInterceptor } from 'src/interceptor/fileInterceptor.interceptor';
+import { CustomFileInterceptor } from '../interceptor/fileInterceptor.interceptor';
+import { User as UserEntity } from '../entities/user.entity';
+import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
+
 
 @Controller('meal')
 export class MealController {
   constructor(private readonly mealService: MealService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
-  create(@Body() createMealDto: CreateMealDto, @User() user) {
-    if (user === undefined) {
-      throw new UnauthorizedException('Authentication header is missing');
-    }
-    return this.mealService.createMeal(createMealDto, user.userid);
+  create(@Body() createMealDto: CreateMealDto, @User() user: UserEntity) {
+    return this.mealService.createMeal(createMealDto, user.id);
   }
 
   @Get()
