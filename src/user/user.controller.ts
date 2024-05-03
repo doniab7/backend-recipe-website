@@ -7,6 +7,9 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserSubscribeDto } from './dto/user-subscription';
@@ -15,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileInterceptor } from 'src/interceptor/fileInterceptor.interceptor';
 import { User } from './user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from './Guards/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -49,12 +53,22 @@ export class UserController {
     return this.userService.login(credentials);
   }
 
-  //TODO: add the authentication token - the user is the only one that can delete his account
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  delete(@Param('id') id: string) {
+  async delete(@Param('id') id: string, @User() user) {
+    const dbuser = await this.userService.findOne(id);
+    if (!dbuser) {
+      throw new NotFoundException('User not found');
+    }
+    if (dbuser.id !== user.id) {
+      throw new UnauthorizedException(
+        'Unauthorized: User does not have permission to delete this meal',
+      );
+    }
     return this.userService.remove(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('profile/photo')
   @UseInterceptors(
     FileInterceptor('photo'),
@@ -67,7 +81,7 @@ export class UserController {
     const fileName = await this.userService.uploadFile(file, 'user');
     const updateuser = new UpdateUserDto();
     updateuser.ImageProfile = fileName;
-    this.userService.update(user.email, updateuser);
+    this.userService.update(user.id, updateuser);
 
     return { fileName };
   }

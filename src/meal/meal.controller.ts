@@ -21,7 +21,6 @@ import { CustomFileInterceptor } from '../interceptor/fileInterceptor.intercepto
 import { User as UserEntity } from '../entities/user.entity';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
 
-
 @Controller('meal')
 export class MealController {
   constructor(private readonly mealService: MealService) {}
@@ -42,6 +41,7 @@ export class MealController {
     return this.mealService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('action/:id')
   async update(
     @Param('id') id: string,
@@ -52,10 +52,7 @@ export class MealController {
     if (!meal) {
       throw new NotFoundException('Meal not found');
     }
-    if (user === undefined) {
-      throw new UnauthorizedException('Authentication header is missing');
-    }
-    if (user.userid !== meal.user.id) {
+    if (user.id !== meal.user.id) {
       throw new UnauthorizedException(
         'Unauthorized: User does not have permission to update this meal',
       );
@@ -63,16 +60,14 @@ export class MealController {
     return this.mealService.update(id, updateMealDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('action/:id')
   async remove(@Param('id') id: string, @User() user) {
     const meal = await this.mealService.findOne(id);
     if (!meal) {
       throw new NotFoundException('Meal not found');
     }
-    if (user === undefined) {
-      throw new UnauthorizedException('Authentication header is missing');
-    }
-    if (user.userid !== meal.user.id) {
+    if (user.id !== meal.user.id) {
       throw new UnauthorizedException(
         'Unauthorized: User does not have permission to delete this meal',
       );
@@ -90,6 +85,7 @@ export class MealController {
     return this.mealService.findByUser(userid);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('photo/:id')
   @UseInterceptors(
     FileInterceptor('photo'),
@@ -104,10 +100,7 @@ export class MealController {
     if (!meal) {
       throw new NotFoundException('Meal not found');
     }
-    if (user === undefined) {
-      throw new UnauthorizedException('Authentication header is missing');
-    }
-    if (meal.user.id !== user.userid) {
+    if (meal.user.id !== user.id) {
       throw new UnauthorizedException(
         'Unauthorized: User does not have permission to update this meal',
       );
