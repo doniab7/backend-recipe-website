@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../../entities/user.entity';
@@ -21,8 +21,9 @@ export class BookmarkService {
       .getOne();
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
+
     const meal = await this.mealRepository
       .createQueryBuilder('meal')
       .leftJoinAndSelect('meal.usersWhoBookmarked', 'usersWhoBookmarked')
@@ -30,14 +31,20 @@ export class BookmarkService {
       .getOne();
 
     if (!meal) {
-      throw new Error('Meal not found');
+      throw new NotFoundException('Meal not found');
     }
-    if (user.bookmarkedMeals.includes(meal)) {
-      throw new Error('Meal already bookmarked');
+
+    if (
+      user.bookmarkedMeals.find(
+        (bookmarkedMeal) => bookmarkedMeal.id === meal.id,
+      )
+    ) {
+      return { message: 'Meal already bookmarked' };
+    } else {
+      user.bookmarkedMeals.push(meal);
+      await this.userRepository.save(user);
+      return { message: 'Meal successfully bookmarked' };
     }
-    user.bookmarkedMeals.push(meal);
-    await this.userRepository.save(user);
-    return user;
   }
 
   async getBookmarks(id: string) {
@@ -48,5 +55,31 @@ export class BookmarkService {
       .getOne();
 
     return user.bookmarkedMeals;
+  }
+
+  async removeBookmark(userId: string, bookmarkId: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.bookmarkedMeals', 'bookmarkedMeals')
+      .where('user.id = :id', { id: userId })
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const bookmarkIndex = user.bookmarkedMeals.findIndex(
+      (meal) => meal.id === bookmarkId,
+    );
+
+    if (bookmarkIndex === -1) {
+      throw new NotFoundException('Bookmark not found');
+    }
+
+    user.bookmarkedMeals.splice(bookmarkIndex, 1);
+
+    await this.userRepository.save(user);
+
+    return { message: 'Bookmark removed successfully' };
   }
 }

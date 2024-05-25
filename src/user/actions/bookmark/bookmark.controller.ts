@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -19,12 +20,14 @@ export class BookmarkController {
     private readonly userService: UserService,
   ) {}
 
+  // id is meal id
   @UseGuards(JwtAuthGuard)
   @Post(':id')
   async bookmarkMeal(@Param('id') id: string, @User() user) {
     return this.bookmarkService.bookmarkMeal(user.id, id);
   }
 
+  // id is user id
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getBookmarks(@Param('id') id: string, @User() user) {
@@ -38,5 +41,12 @@ export class BookmarkController {
       );
     }
     return this.bookmarkService.getBookmarks(id);
+  }
+
+  // id is meal id
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async removeBookmark(@Param('id') id: string, @User() user) {
+    return this.bookmarkService.removeBookmark(user.id, id);
   }
 }
