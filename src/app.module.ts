@@ -17,6 +17,7 @@ import { GraphqlModule } from './grapgql/graphql.module';
 require('dotenv').config();
 import { MealModule } from './meal/meal.module';
 import { CategoryModule } from './category/category.module';
+import { BookmarkModule } from './user/actions/bookmark/bookmark.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { CategoryModule } from './category/category.module';
     GraphqlModule,
     MealModule,
     CategoryModule,
+    BookmarkModule,
   ],
 
   controllers: [AppController],

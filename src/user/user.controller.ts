@@ -105,25 +105,4 @@ export class UserController {
 
     return { fileName };
   }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('bookmark/:id')
-  async bookmarkMeal(@Param('id') id: string, @User() user) {
-    return this.userService.bookmarkMeal(user.id, id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('bookmarks/:id')
-  async getBookmarks(@Param('id') id: string, @User() user) {
-    const dbuser = await this.userService.findOne(id);
-    if (!dbuser) {
-      throw new NotFoundException('User not found');
-    }
-    if (dbuser.id !== user.id) {
-      throw new UnauthorizedException(
-        'Unauthorized: User does not have permission to view bookmarks',
-      );
-    }
-    return this.userService.getBookmarks(id);
-  }
 }

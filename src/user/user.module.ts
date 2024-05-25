@@ -8,11 +8,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/passport-jwt.strategy';
 import { MulterModule } from '@nestjs/platform-express';
 import { UserResolver } from './user.resolver';
-import { Meal } from 'src/entities/meal.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Meal]),
+    TypeOrmModule.forFeature([User]),
     PassportModule.register({
       defaultStrategy: 'jwt',
     }),
@@ -28,5 +27,6 @@ import { Meal } from 'src/entities/meal.entity';
   ],
   controllers: [UserController],
   providers: [UserService, JwtStrategy, UserResolver],
+  exports: [UserService, JwtStrategy],
 })
 export class UserModule {}
