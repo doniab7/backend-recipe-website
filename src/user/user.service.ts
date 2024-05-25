@@ -124,4 +124,14 @@ export class UserService extends CrudService<User> {
     await this.userRepository.save(user);
     return user;
   }
+
+  async getBookmarks(id: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.bookmarkedMeals', 'bookmarkedMeals')
+      .where('user.id = :id', { id: id })
+      .getOne();
+
+    return user.bookmarkedMeals;
+  }
 }
