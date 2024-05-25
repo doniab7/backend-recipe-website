@@ -18,6 +18,7 @@ require('dotenv').config();
 import { MealModule } from './meal/meal.module';
 import { CategoryModule } from './category/category.module';
 import { BookmarkModule } from './user/actions/bookmark/bookmark.module';
+import { CommentModule } from './user/actions/comment/comment.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { BookmarkModule } from './user/actions/bookmark/bookmark.module';
     MealModule,
     CategoryModule,
     BookmarkModule,
+    CommentModule,
   ],
 
   controllers: [AppController],
