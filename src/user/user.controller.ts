@@ -10,6 +10,7 @@ import {
   UseGuards,
   NotFoundException,
   UnauthorizedException,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserSubscribeDto } from './dto/user-subscription';
@@ -54,6 +55,25 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @User() user,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    const dbuser = await this.userService.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (dbuser.id !== user.id) {
+      throw new UnauthorizedException(
+        'Unauthorized: User does not have permission to update this account info',
+      );
+    }
+    return this.userService.update(id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Param('id') id: string, @User() user) {
     const dbuser = await this.userService.findOne(id);
@@ -62,7 +82,7 @@ export class UserController {
     }
     if (dbuser.id !== user.id) {
       throw new UnauthorizedException(
-        'Unauthorized: User does not have permission to delete this meal',
+        'Unauthorized: User does not have permission to delete this account',
       );
     }
     return this.userService.remove(id);

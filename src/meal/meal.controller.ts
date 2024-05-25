@@ -42,7 +42,7 @@ export class MealController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('action/:id')
+  @Patch(':id')
   async update(
     @Param('id') id: string,
     @User() user,
@@ -61,7 +61,7 @@ export class MealController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('action/:id')
+  @Delete(':id')
   async remove(@Param('id') id: string, @User() user) {
     const meal = await this.mealService.findOne(id);
     if (!meal) {

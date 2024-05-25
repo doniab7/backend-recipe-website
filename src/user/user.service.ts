@@ -89,8 +89,6 @@ export class UserService extends CrudService<User> {
     }
 
     user.username = updateUserDto.username ?? user.username;
-    user.email = updateUserDto.email ?? user.email;
-    user.ImageProfile = updateUserDto.ImageProfile ?? user.ImageProfile;
 
     await this.userRepository.save(user);
 
