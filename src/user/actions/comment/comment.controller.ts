@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   UseGuards,
@@ -30,5 +31,11 @@ export class CommentController {
   @Delete(':id')
   async removeComment(@Param('id') id: string, @User() user) {
     return this.commentService.removeComment(user.id, id);
+  }
+
+  // mealId is meal id
+  @Get(':mealId')
+  async getCommentsOfMeal(@Param('mealId') mealId: string) {
+    return this.commentService.getCommentsOfMeal(mealId);
   }
 }

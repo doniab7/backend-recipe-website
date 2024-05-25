@@ -64,4 +64,19 @@ export class CommentService {
     await this.commentRepository.delete(commentId);
     return { message: 'Comment removed successfully' };
   }
+
+  async getCommentsOfMeal(mealId: string) {
+    const meal = await this.mealRepository
+      .createQueryBuilder('meal')
+      .leftJoinAndSelect('meal.comments', 'comments')
+      .leftJoinAndSelect('comments.user', 'user')
+      .where('meal.id = :id', { id: mealId })
+      .getOne();
+
+    if (!meal) {
+      throw new NotFoundException('Meal not found');
+    }
+
+    return meal.comments;
+  }
 }
