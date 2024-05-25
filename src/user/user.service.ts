@@ -14,12 +14,14 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-user';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Meal } from 'src/entities/meal.entity';
 
 @Injectable()
 export class UserService extends CrudService<User> {
   // Injecter le repository de l'entite User dans le constructeur
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Meal) private mealRepository: Repository<Meal>,
     private jwtService: JwtService,
   ) {
     super(userRepository);
@@ -36,6 +38,7 @@ export class UserService extends CrudService<User> {
       ...userData,
     });
     user.ImageProfile = '';
+    user.bookmarkedMeals = [];
     user.salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(userData.password, user.salt);
     try {
@@ -92,6 +95,33 @@ export class UserService extends CrudService<User> {
 
     await this.userRepository.save(user);
 
+    return user;
+  }
+
+  async bookmarkMeal(id: string, mealId: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.bookmarkedMeals', 'bookmarkedMeals')
+      .where('user.id = :id', { id: id })
+      .getOne();
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const meal = await this.mealRepository
+      .createQueryBuilder('meal')
+      .leftJoinAndSelect('meal.usersWhoBookmarked', 'usersWhoBookmarked')
+      .where('meal.id = :id', { id: mealId })
+      .getOne();
+
+    if (!meal) {
+      throw new Error('Meal not found');
+    }
+    if (user.bookmarkedMeals.includes(meal)) {
+      throw new Error('Meal already bookmarked');
+    }
+    user.bookmarkedMeals.push(meal);
+    await this.userRepository.save(user);
     return user;
   }
 }

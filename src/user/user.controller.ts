@@ -105,4 +105,10 @@ export class UserController {
 
     return { fileName };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('bookmark/:id')
+  async bookmarkMeal(@Param('id') id: string, @User() user) {
+    return this.userService.bookmarkMeal(user.id, id);
+  }
 }

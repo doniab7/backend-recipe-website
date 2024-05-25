@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Ingredient } from './ingredient.entity';
 import { Step } from './step.entity';
@@ -54,5 +55,6 @@ export class Meal {
   usersWhoLiked: User[];
 
   @ManyToMany(() => User, (user) => user.bookmarkedMeals)
+  @JoinTable()
   usersWhoBookmarked: User[];
 }
