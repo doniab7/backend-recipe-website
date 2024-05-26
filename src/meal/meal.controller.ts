@@ -20,10 +20,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileInterceptor } from '../interceptor/fileInterceptor.interceptor';
 import { User as UserEntity } from '../entities/user.entity';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
-<<<<<<< HEAD
-=======
-
->>>>>>> a6ea9de72ebb9bda063bd7340df72614b264107a
 @Controller('meal')
 export class MealController {
   constructor(private readonly mealService: MealService) {}
