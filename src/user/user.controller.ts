@@ -24,9 +24,10 @@ import { JwtAuthGuard } from './Guards/jwt-auth.guard';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@User() user) {
+    return user;
   }
 
   @Get(':id')
