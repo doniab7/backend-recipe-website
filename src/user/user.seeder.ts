@@ -881,6 +881,7 @@ export const seedUsers = async (entityManager: EntityManager) => {
 
     // Save the user and their meals to the database
     await entityManager.save(user);
+    await entityManager.save(user.meals);
   }
 
   console.log('Users seeded successfully.');
