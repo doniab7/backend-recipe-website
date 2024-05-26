@@ -844,6 +844,7 @@ export const seedUsers = async (entityManager: EntityManager) => {
       meal.description = mealData.description;
       meal.region = mealData.region;
       meal.thumbnail = mealData.thumbnail;
+      meal.user = user; // Set the user relationship
 
       // Fetch the existing category by name
       const category = await entityManager.findOne(Category, {
