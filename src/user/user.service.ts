@@ -32,6 +32,7 @@ export class UserService extends CrudService<User> {
     if (existingUser) {
       throw new ConflictException('Cet e-mail est déjà utilisé');
     }
+
     const user = this.userRepository.create({
       ...userData,
     });
@@ -39,18 +40,26 @@ export class UserService extends CrudService<User> {
     user.bookmarkedMeals = [];
     user.salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(userData.password, user.salt);
+
     try {
       await this.userRepository.save(user);
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
-    }
-    return {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-    };
-  }
 
+      const payload = {
+        sub: user.id,
+        username: user.username,
+        email: user.email,
+      };
+      const jwt = await this.jwtService.sign(payload);
+      return {
+        access_token: jwt,
+      };
+    } catch (error) {
+      throw new HttpException(
+        'Error during registration',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
   async login(credentials: LoginCredentialsDto) {
     const { email, password } = credentials;
     const user = await this.userRepository
