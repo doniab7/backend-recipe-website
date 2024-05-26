@@ -56,5 +56,6 @@ export class Meal {
   usersWhoLiked: User[];
 
   @ManyToMany(() => User, (user) => user.bookmarkedMeals)
+  @JoinTable()
   usersWhoBookmarked: User[];
 }

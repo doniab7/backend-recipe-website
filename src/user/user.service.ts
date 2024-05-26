@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  HttpCode,
   HttpException,
   HttpStatus,
   Injectable,
@@ -37,14 +36,13 @@ export class UserService extends CrudService<User> {
       ...userData,
     });
     user.ImageProfile = '';
+    user.bookmarkedMeals = [];
     user.salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(userData.password, user.salt);
     try {
       await this.userRepository.save(user);
     } catch (e) {
-      throw new HttpException(
-        e,HttpStatus.BAD_REQUEST
-      );
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }
     return {
       id: user.id,
@@ -85,15 +83,13 @@ export class UserService extends CrudService<User> {
   async findByUsername(username: string) {
     return this.userRepository.findOneBy({ username: username });
   }
-  async update(email: string, updateUserDto: UpdateUserDto) {
-    const user = await this.findByEmail(email);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     user.username = updateUserDto.username ?? user.username;
-    user.email = updateUserDto.email ?? user.email;
-    user.ImageProfile = updateUserDto.ImageProfile ?? user.ImageProfile;
 
     await this.userRepository.save(user);
 

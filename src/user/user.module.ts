@@ -27,5 +27,6 @@ import { UserResolver } from './user.resolver';
   ],
   controllers: [UserController],
   providers: [UserService, JwtStrategy, UserResolver],
+  exports: [UserService, JwtStrategy],
 })
 export class UserModule {}

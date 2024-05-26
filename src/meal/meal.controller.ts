@@ -20,6 +20,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileInterceptor } from '../interceptor/fileInterceptor.interceptor';
 import { User as UserEntity } from '../entities/user.entity';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
+<<<<<<< HEAD
+=======
+
+>>>>>>> a6ea9de72ebb9bda063bd7340df72614b264107a
 @Controller('meal')
 export class MealController {
   constructor(private readonly mealService: MealService) {}
@@ -40,7 +44,8 @@ export class MealController {
     return this.mealService.findOne(id);
   }
 
-  @Patch('action/:id')
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
   async update(
     @Param('id') id: string,
     @User() user,
@@ -50,10 +55,7 @@ export class MealController {
     if (!meal) {
       throw new NotFoundException('Meal not found');
     }
-    if (user === undefined) {
-      throw new UnauthorizedException('Authentication header is missing');
-    }
-    if (user.userid !== meal.user.id) {
+    if (user.id !== meal.user.id) {
       throw new UnauthorizedException(
         'Unauthorized: User does not have permission to update this meal',
       );
@@ -61,16 +63,14 @@ export class MealController {
     return this.mealService.update(id, updateMealDto);
   }
 
-  @Delete('action/:id')
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
   async remove(@Param('id') id: string, @User() user) {
     const meal = await this.mealService.findOne(id);
     if (!meal) {
       throw new NotFoundException('Meal not found');
     }
-    if (user === undefined) {
-      throw new UnauthorizedException('Authentication header is missing');
-    }
-    if (user.userid !== meal.user.id) {
+    if (user.id !== meal.user.id) {
       throw new UnauthorizedException(
         'Unauthorized: User does not have permission to delete this meal',
       );
@@ -88,6 +88,7 @@ export class MealController {
     return this.mealService.findByUser(userid);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('photo/:id')
   @UseInterceptors(
     FileInterceptor('photo'),
@@ -102,10 +103,7 @@ export class MealController {
     if (!meal) {
       throw new NotFoundException('Meal not found');
     }
-    if (user === undefined) {
-      throw new UnauthorizedException('Authentication header is missing');
-    }
-    if (meal.user.id !== user.userid) {
+    if (meal.user.id !== user.id) {
       throw new UnauthorizedException(
         'Unauthorized: User does not have permission to update this meal',
       );
@@ -116,16 +114,4 @@ export class MealController {
     return { fileName };
   }
 
-  @Post(':id/likes')
-  async IncrementLikes(@User() user: UserEntity, @Param('id') id: string) {
-    const meal = await this.mealService.findOneWithLikes(id);
-    meal.usersWhoLiked.push(user);
-    meal.numberLikes = meal.usersWhoLiked.length;
-  }
-
-  @Get(':id/likes')
-  async getLikes(@Param('id') id: string) {
-    const { usersWhoLiked } = await this.mealService.findOneWithLikes(id);
-    return usersWhoLiked;
-  }
 }

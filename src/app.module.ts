@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,10 +13,13 @@ import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
 import { UserModule } from './user/user.module';
 import { GraphqlModule } from './grapgql/graphql.module';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 import { MealModule } from './meal/meal.module';
 import { CategoryModule } from './category/category.module';
-import { AuthMiddleware } from './user/auth.middleware';
+import { BookmarkModule } from './user/actions/bookmark/bookmark.module';
+import { CommentModule } from './user/actions/comment/comment.module';
+import { LikeModule } from './user/actions/like/like.module';
 
 @Module({
   imports: [
@@ -39,16 +42,18 @@ import { AuthMiddleware } from './user/auth.middleware';
         Step,
       ],
       synchronize: true,
-      logging: true
+      logging: true,
     }),
     UserModule,
     GraphqlModule,
     MealModule,
     CategoryModule,
+    BookmarkModule,
+    CommentModule,
+    LikeModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-}
+export class AppModule {}

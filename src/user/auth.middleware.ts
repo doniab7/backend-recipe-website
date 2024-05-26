@@ -1,4 +1,8 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
@@ -6,7 +10,7 @@ import * as jwt from 'jsonwebtoken';
 export class AuthMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers.authorization;
-    
+
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -19,7 +23,7 @@ export class AuthMiddleware implements NestMiddleware {
       };
       next();
     } catch (error) {
-     throw new UnauthorizedException();
+      throw new UnauthorizedException();
     }
   }
 }
