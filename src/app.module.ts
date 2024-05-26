@@ -42,7 +42,7 @@ import { LikeModule } from './user/actions/like/like.module';
         Step,
       ],
       synchronize: true,
-      logging: true,
+     
     }),
     UserModule,
     GraphqlModule,

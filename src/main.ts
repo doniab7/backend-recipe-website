@@ -10,11 +10,11 @@ async function bootstrap() {
   app.useStaticAssets('public/uploads/user');
   app.useStaticAssets('public/uploads/meal');
   app.useStaticAssets(join(__dirname, '..', 'public'));
-   app.enableCors({
-    origin: true, // or specify the domains you want to allow e.g. ['http://example.com', 'https://example2.com']
+  app.enableCors({
+    origin: 'http://localhost:3001', // or specify the domains you want to allow e.g. ['http://example.com', 'https://example2.com']
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept',
-    credentials: true, // if you want to allow sending of cookies or credentials
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization'], // Ensure 'Authorization' is included and properly capitalized
+    credentials: true, // Allows cookies and credentials to be sent with requests
   });
 
   //seeding categories
