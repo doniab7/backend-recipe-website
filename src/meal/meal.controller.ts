@@ -20,14 +20,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileInterceptor } from '../interceptor/fileInterceptor.interceptor';
 import { User as UserEntity } from '../entities/user.entity';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
-
-
 @Controller('meal')
 export class MealController {
   constructor(private readonly mealService: MealService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('create')
+  @Post()
   create(@Body() createMealDto: CreateMealDto, @User() user: UserEntity) {
     return this.mealService.createMeal(createMealDto, user.id);
   }
@@ -116,5 +114,18 @@ export class MealController {
     meal.thumbnail = fileName;
     this.mealService.update(meal.id, meal);
     return { fileName };
+  }
+
+  @Post(':id/likes')
+  async IncrementLikes(@User() user: UserEntity, @Param('id') id: string) {
+    const meal = await this.mealService.findOneWithLikes(id);
+    meal.usersWhoLiked.push(user);
+    meal.numberLikes = meal.usersWhoLiked.length;
+  }
+
+  @Get(':id/likes')
+  async getLikes(@Param('id') id: string) {
+    const { usersWhoLiked } = await this.mealService.findOneWithLikes(id);
+    return usersWhoLiked;
   }
 }

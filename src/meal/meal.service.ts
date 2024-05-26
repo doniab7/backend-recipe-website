@@ -72,4 +72,13 @@ export class MealService extends CrudService<Meal> {
       .where('user.id = :userid', { userid })
       .getMany();
   }
+
+  findOneWithLikes(id): Promise<Meal> {
+    return this.mealRepository.findOne({
+      where: { id },
+      relations: {
+        usersWhoLiked: true,
+      },
+    });
+  }
 }
