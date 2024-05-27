@@ -61,13 +61,18 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @UseInterceptors(
+    FileInterceptor('profileImage'),
+    new CustomFileInterceptor(['image/png', 'image/jpeg'], 1000000),
+  )
   async update(
     @Param('id') id: string,
     @User() user,
     @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
     const dbuser = await this.userService.findOne(id);
-    if (!user) {
+    if (!dbuser) {
       throw new NotFoundException('User not found');
     }
     if (dbuser.id !== user.id) {
@@ -75,6 +80,11 @@ export class UserController {
         'Unauthorized: User does not have permission to update this account info',
       );
     }
+    if (file) {
+      const fileName = await this.userService.uploadFile(file, 'user');
+      updateUserDto.ImageProfile = fileName;
+    }
+    console.log(updateUserDto)
     return this.userService.update(id, updateUserDto);
   }
 
