@@ -93,4 +93,22 @@ export class UserController {
     }
     return this.userService.remove(id);
   }
+  @UseGuards(JwtAuthGuard)
+  @Post('profile/photo')
+  @UseInterceptors(
+    FileInterceptor('photo'),
+    new CustomFileInterceptor(['image/png', 'image/jpeg'], 1000000),
+  )
+  async uploadProfilePhoto(
+    @UploadedFile() file: Express.Multer.File,
+    @User() user,
+  ) {
+    const fileName = await this.userService.uploadFile(file, 'user');
+    const updateuser = new UpdateUserDto();
+    updateuser.ImageProfile = fileName;
+    console.log(updateuser)
+    this.userService.update(user.id, updateuser);
+
+    return { fileName };
+  }
 }
