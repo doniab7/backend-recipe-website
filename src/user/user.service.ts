@@ -98,9 +98,8 @@ export class UserService extends CrudService<User> {
       throw new NotFoundException('User not found');
     }
 
-    user.username = updateUserDto.username ?? user.username;
 
-    await this.userRepository.save(user);
+    await this.userRepository.update(id,updateUserDto);
 
     return user;
   }
