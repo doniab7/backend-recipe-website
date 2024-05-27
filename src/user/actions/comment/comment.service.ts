@@ -71,6 +71,7 @@ export class CommentService {
       .leftJoinAndSelect('meal.comments', 'comments')
       .leftJoinAndSelect('comments.user', 'user')
       .where('meal.id = :id', { id: mealId })
+      .orderBy('comments.timestamp', 'DESC') // 'DESC' for descending order, 'ASC' for ascending
       .getOne();
 
     if (!meal) {
