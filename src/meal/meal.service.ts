@@ -65,11 +65,12 @@ export class MealService extends CrudService<Meal> {
       .getMany();
   }
 
-  async findByUser(userid: string) {
+  async findByUser(userId: string) {
     return await this.mealRepository
       .createQueryBuilder('meal')
       .leftJoinAndSelect('meal.user', 'user')
-      .where('user.id = :userid', { userid })
+      .leftJoinAndSelect('meal.category', 'category')
+      .where('user.id = :userId', { userId })
       .getMany();
   }
 
