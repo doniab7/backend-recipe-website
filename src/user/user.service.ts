@@ -104,7 +104,4 @@ export class UserService extends CrudService<User> {
 
     return user;
   }
-
-
-  
 }
