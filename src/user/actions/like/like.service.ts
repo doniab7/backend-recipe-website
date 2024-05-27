@@ -41,7 +41,10 @@ export class LikeService {
       meal.numberLikes++;
       await this.userRepository.save(user);
       await this.mealRepository.save(meal);
-      return { message: 'Meal successfully liked' };
+      return {
+        message: 'Meal successfully liked',
+        numberLikes: meal.numberLikes,
+      };
     }
   }
 
@@ -79,7 +82,10 @@ export class LikeService {
     await this.userRepository.save(user);
     await this.mealRepository.save(meal);
 
-    return { message: 'Like removed successfully' };
+    return {
+      message: 'Like removed successfully',
+      numberLikes: meal.numberLikes,
+    };
   }
 
   async getIsLiked(mealId: string, userId: any) {
