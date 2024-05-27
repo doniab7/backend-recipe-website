@@ -38,8 +38,13 @@ export class LikeService {
       return { message: 'Meal already liked' };
     } else {
       user.likedMeals.push(meal);
+      meal.numberLikes++;
       await this.userRepository.save(user);
-      return { message: 'Meal successfully liked' };
+      await this.mealRepository.save(meal);
+      return {
+        message: 'Meal successfully liked',
+        numberLikes: meal.numberLikes,
+      };
     }
   }
 
@@ -71,9 +76,35 @@ export class LikeService {
     }
 
     user.likedMeals.splice(likeIndex, 1);
+    const meal = await this.mealRepository.findOneBy({ id: mealId });
+    meal.numberLikes--;
 
     await this.userRepository.save(user);
+    await this.mealRepository.save(meal);
 
-    return { message: 'Like removed successfully' };
+    return {
+      message: 'Like removed successfully',
+      numberLikes: meal.numberLikes,
+    };
+  }
+
+  async getIsLiked(mealId: string, userId: any) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.likedMeals', 'likedMeals')
+      .where('user.id = :id', { id: userId })
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const likeIndex = user.likedMeals.findIndex((meal) => meal.id === mealId);
+
+    if (likeIndex === -1) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
