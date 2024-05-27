@@ -29,18 +29,9 @@ export class BookmarkController {
 
   // id is user id
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async getBookmarks(@Param('id') id: string, @User() user) {
-    const dbuser = await this.userService.findOne(id);
-    if (!dbuser) {
-      throw new NotFoundException('User not found');
-    }
-    if (dbuser.id !== user.id) {
-      throw new UnauthorizedException(
-        'Unauthorized: User does not have permission to view bookmarks',
-      );
-    }
-    return this.bookmarkService.getBookmarks(id);
+  @Get()
+  async getBookmarks(@User() user) {
+    return this.bookmarkService.getBookmarks(user.id);
   }
 
   // id is meal id
