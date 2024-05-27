@@ -183,6 +183,8 @@ const userSeedData = [
     username: 'farah',
     email: 'farah@example.com',
     password: 'admin',
+    bio: 'Ilovepasta!',
+
     ImageProfile: 'profile_farah.jpg',
     meals: [
       {
@@ -322,6 +324,7 @@ const userSeedData = [
     email: 'ahmed@example.com',
     password: 'admin',
     ImageProfile: 'profile_ahmed.jpg',
+    bio: 'I Love cooking ! ',
     meals: [
       {
         name: 'Greek Salad',
@@ -479,6 +482,8 @@ const userSeedData = [
   {
     username: 'oumayma',
     email: 'oumayma@example.com',
+    bio: 'I love pasta ! ',
+
     password: 'admin',
     ImageProfile: 'profile_oumayma.jpg',
     meals: [
@@ -578,6 +583,8 @@ const userSeedData = [
     username: 'nour',
     email: 'nour@example.com',
     password: 'admin',
+    bio: 'I love pasta ! ',
+
     ImageProfile: 'profile_nour.jpg',
     meals: [
       {
@@ -700,6 +707,8 @@ const userSeedData = [
   {
     username: 'walid',
     email: 'walid@example.com',
+    bio: 'I love cooking ! ',
+
     password: 'admin',
     ImageProfile: 'profile_walid.jpg',
     meals: [
@@ -831,6 +840,7 @@ export const seedUsers = async (entityManager: EntityManager) => {
     user.username = userData.username;
     user.email = userData.email;
     user.salt = await bcrypt.genSalt();
+    user.bio = user.bio;
     user.password = await bcrypt.hash(userData.password, user.salt);
     user.ImageProfile = userData.ImageProfile; // Set the profile image
 
