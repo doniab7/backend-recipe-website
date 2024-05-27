@@ -30,7 +30,9 @@ export class User extends Timestamp {
   @Column()
   @Field(() => String)
   email: string;
-
+  @Column({ default: '' })
+  @Field(() => String)
+  bio: string;
   @Column()
   password: string;
   @Column({ default: '' })

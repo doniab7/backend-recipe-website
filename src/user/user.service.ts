@@ -9,7 +9,7 @@ import { UserSubscribeDto } from './dto/user-subscription';
 import { CrudService } from '../common/service/crud.service';
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-user';
@@ -24,7 +24,11 @@ export class UserService extends CrudService<User> {
   ) {
     super(userRepository);
   }
-
+  async passwordHash(user: User | UpdateUserDto) {
+    user.salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(user.password, user.salt);
+    return user;
+  }
   async register(userData: UserSubscribeDto) {
     const existingUser = await this.userRepository.findOneBy({
       email: userData.email,
@@ -32,15 +36,13 @@ export class UserService extends CrudService<User> {
     if (existingUser) {
       throw new ConflictException('Cet e-mail est déjà utilisé');
     }
-
     const user = this.userRepository.create({
       ...userData,
     });
+
     user.ImageProfile = '';
     user.bookmarkedMeals = [];
-    user.salt = await bcrypt.genSalt();
-    user.password = await bcrypt.hash(userData.password, user.salt);
-
+    await this.passwordHash(user);
     try {
       await this.userRepository.save(user);
 
@@ -98,12 +100,20 @@ export class UserService extends CrudService<User> {
       throw new NotFoundException('User not found');
     }
 
+    if (updateUserDto.password) {
+      // Assume you have a method passwordHash to hash the password
+      await this.passwordHash(updateUserDto);
+    }
 
-    await this.userRepository.update(id,updateUserDto);
+    const updatedUser: UpdateResult = await this.userRepository.update(
+      id,
+      updateUserDto,
+    );
 
-    return user;
+    if (updatedUser.affected === 1) {
+      return await this.findOne(id);
+    } else {
+      throw new Error('Failed to update user');
+    }
   }
-
-
-  
 }
