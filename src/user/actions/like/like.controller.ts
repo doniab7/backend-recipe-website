@@ -2,8 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -26,5 +24,11 @@ export class LikeController {
   @Delete(':mealId/unlike')
   async unlikeMeal(@Param('mealId') mealId: string, @User() user) {
     return this.likeService.unlikeMeal(user.id, mealId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('isliked/:mealId')
+  async getIsLiked(@Param('mealId') mealId: string, @User() user) {
+    return this.likeService.getIsLiked(mealId, user.id);
   }
 }

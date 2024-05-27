@@ -44,7 +44,7 @@ export class CommentService {
     comment.timestamp = Date.now();
 
     await this.commentRepository.save(comment);
-    return { message: 'Comment successfully added' };
+    return { message: 'Comment successfully added', comment: comment };
   }
 
   async removeComment(userId: string, commentId: string) {
