@@ -12,7 +12,6 @@ import { Step } from './entities/step.entity';
 import { Comment } from './entities/comment.entity';
 import { Notification } from './entities/notification.entity';
 import { UserModule } from './user/user.module';
-import { GraphqlModule } from './grapgql/graphql.module';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 import { MealModule } from './meal/meal.module';
@@ -42,10 +41,8 @@ import { LikeModule } from './user/actions/like/like.module';
         Step,
       ],
       synchronize: true,
-     
     }),
     UserModule,
-    GraphqlModule,
     MealModule,
     CategoryModule,
     BookmarkModule,
