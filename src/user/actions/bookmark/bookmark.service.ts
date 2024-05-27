@@ -82,4 +82,26 @@ export class BookmarkService {
 
     return { message: 'Bookmark removed successfully' };
   }
+
+  async getIsBookmarked(mealId: string, userId: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.bookmarkedMeals', 'bookmarkedMeals')
+      .where('user.id = :id', { id: userId })
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const bookmarkIndex = user.bookmarkedMeals.findIndex(
+      (meal) => meal.id === mealId,
+    );
+
+    if (bookmarkIndex === -1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

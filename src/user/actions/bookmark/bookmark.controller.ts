@@ -32,6 +32,12 @@ export class BookmarkController {
     return this.bookmarkService.getBookmarks(user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('isbookmarked/:mealId')
+  async getIsBookmarked(@Param('mealId') mealId: string, @User() user) {
+    return this.bookmarkService.getIsBookmarked(mealId, user.id);
+  }
+
   // id is meal id
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
