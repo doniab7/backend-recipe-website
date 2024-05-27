@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from '../../../entities/user.entity';
 import { Meal } from 'src/entities/meal.entity';
 import { Comment } from 'src/entities/comment.entity';
+import { NotificationService } from "../../../notification/notification.service";
 
 @Injectable()
 export class CommentService {
@@ -18,6 +19,7 @@ export class CommentService {
     private mealRepository: Repository<Meal>,
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
+    //private readonly notificationService: NotificationService,
   ) {}
 
   async addComment(userId: string, mealId: string, content: string) {
@@ -44,6 +46,10 @@ export class CommentService {
     comment.timestamp = Date.now();
 
     await this.commentRepository.save(comment);
+    /*
+      const content = `${user.username} commented on your meal ${meal.name}`;
+      this.notificationService.createCategoryNotification(meal.user.id, meal.category.id, content)
+      */
     return { message: 'Comment successfully added' };
   }
 

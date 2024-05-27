@@ -6,6 +6,8 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Ingredient } from 'src/entities/ingredient.entity';
 import { Step } from 'src/entities/step.entity';
 import { User } from 'src/entities/user.entity';
+import { SubscriptionService } from "../user/actions/subscription/subscription.service";
+import e from "express";
 
 @Injectable()
 export class MealService extends CrudService<Meal> {
@@ -18,6 +20,7 @@ export class MealService extends CrudService<Meal> {
     private stepRepository: Repository<Step>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    //private readonly notificationService: NotificationService,
   ) {
     super(mealRepository);
   }
@@ -30,6 +33,18 @@ export class MealService extends CrudService<Meal> {
     entity.user = user;
     await this.ingredientRepository.save(entity.ingredients);
     await this.stepRepository.save(entity.steps);
+    /*
+      const categoryID = entity.category.id;
+      const content = `a new meal ${entity.name} is added to the ${entity.category.name} `;
+      const subscribers = await this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.subscribedCategories', 'category')
+        .where('category.id = :categoryId', { categoryID })
+        .getMany();
+      for (const sub of subscribers) {
+        this.notificationService.createCategoryNotification(sub.id, categoryID, content)
+      }
+      */
     return this.mealRepository.save(entity);
   }
 

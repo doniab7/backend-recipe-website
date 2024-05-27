@@ -20,9 +20,27 @@ import { CategoryModule } from './category/category.module';
 import { BookmarkModule } from './user/actions/bookmark/bookmark.module';
 import { CommentModule } from './user/actions/comment/comment.module';
 import { LikeModule } from './user/actions/like/like.module';
+import { SubscriptionModule } from "./user/actions/subscription/subscription.module";
+import { NotificationsModule } from "./notification/notification.module";
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { join } from "path";
 
 @Module({
-  imports: [
+  imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
+    driver: ApolloDriver,
+    autoSchemaFile: join(process.cwd(), 'src/notification/schema.gql'),
+    subscriptions: {
+      'subscriptions-transport-ws': {
+        onConnect: (connectionParams, webSocket, context) => {
+          console.log('Client connected for subscriptions');
+        },
+        onDisconnect: (webSocket, context) => {
+          console.log('Client disconnected from subscriptions');
+        },
+      },
+    },
+  }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -51,6 +69,8 @@ import { LikeModule } from './user/actions/like/like.module';
     BookmarkModule,
     CommentModule,
     LikeModule,
+    SubscriptionModule,
+    NotificationsModule
   ],
 
   controllers: [AppController],

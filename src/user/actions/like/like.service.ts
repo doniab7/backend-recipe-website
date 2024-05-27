@@ -3,6 +3,7 @@ import { User } from '../../../entities/user.entity';
 import { Meal } from '../../../entities/meal.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { NotificationService } from "../../../notification/notification.service";
 
 
 @Injectable()
@@ -12,6 +13,7 @@ export class LikeService {
     private mealRepository: Repository<Meal>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    //private readonly notificationService: NotificationService,
   ) {}
 
   async likeMeal(userId: string, mealId: string): Promise<void> {
@@ -22,6 +24,10 @@ export class LikeService {
       meal.usersWhoLiked.push(user);
       meal.numberLikes++;
       await this.mealRepository.save(meal);
+      /*
+      const content = `${user.username} liked your meal ${meal.name}`;
+      this.notificationService.createCategoryNotification(meal.user.id, meal.category.id, content)
+      */
     }
   }
 
