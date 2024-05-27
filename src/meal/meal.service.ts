@@ -28,9 +28,14 @@ export class MealService extends CrudService<Meal> {
       throw new NotFoundException('User not found');
     }
     entity.user = user;
-    await this.ingredientRepository.save(entity.ingredients);
-    await this.stepRepository.save(entity.steps);
-    return this.mealRepository.save(entity);
+    const meal = this.mealRepository.create(entity);
+    
+    const newMeal = await this.mealRepository.save(meal);
+    console.log("hello",newMeal);
+  //  await this.ingredientRepository.save(entity.ingredients);
+   await this.stepRepository.save(entity.steps);
+   return newMeal;
+   
   }
 
   async update(id: string, updateDto: DeepPartial<Meal>): Promise<Meal> {

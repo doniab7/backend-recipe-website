@@ -26,7 +26,8 @@ export class MealController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createMealDto: CreateMealDto, @User() user: UserEntity) {
+  create(@Body() createMealDto : CreateMealDto, @User() user: UserEntity) {
+    console.log(createMealDto);
     return this.mealService.createMeal(createMealDto, user.id);
   }
 

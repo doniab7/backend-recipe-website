@@ -24,7 +24,7 @@ export class Meal {
   @Column('int')
   duration: number;
 
-  @Column('int')
+  @Column('int', { default: 0 })
   numberLikes: number;
 
   @Column('text')
@@ -33,7 +33,7 @@ export class Meal {
   @Column('text')
   region: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   thumbnail: string;
 
   @ManyToOne(() => Category, (category) => category.meals)
