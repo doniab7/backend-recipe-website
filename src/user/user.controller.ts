@@ -132,6 +132,17 @@ export class UserController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('unfollow')
+  async unfollow(@User() user: any, @Body('idWanted') idWanted: string) {
+    try {
+      await this.userService.unfollowUser(user.id, idWanted);
+      return { result: 'ok' };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);

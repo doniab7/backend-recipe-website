@@ -176,4 +176,37 @@ export class UserService extends CrudService<User> {
 
     return user.following;
   }
+
+  async unfollowUser(followerId: string, followingId: string): Promise<void> {
+    const follower = await this.userRepository.findOne({
+      where: { id: followerId },
+      relations: ['following', 'followers'],
+    });
+
+    const wantedUser = await this.userRepository.findOne({
+      where: { id: followingId },
+      relations: ['followers', 'following'],
+    });
+
+    if (!follower || !wantedUser) {
+      throw new Error('User not found');
+    }
+
+    follower.following = follower.following.filter(
+      (user) => user.id !== followingId,
+    );
+    wantedUser.followers = wantedUser.followers.filter(
+      (user) => user.id !== followerId,
+    );
+
+    await this.userRepository.save(follower);
+    await this.userRepository.save(wantedUser);
+
+    // Emit the unfollow notification event with updated followers and following arrays
+    this.eventEmitter.emit('unfollow', {
+      type: 'unfollow',
+      follower,
+      followingId,
+    });
+  }
 }
