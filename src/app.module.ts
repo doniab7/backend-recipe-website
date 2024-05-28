@@ -19,6 +19,8 @@ import { CategoryModule } from './category/category.module';
 import { BookmarkModule } from './user/actions/bookmark/bookmark.module';
 import { CommentModule } from './user/actions/comment/comment.module';
 import { LikeModule } from './user/actions/like/like.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { NotificationsModule } from './user/actions/follow/follow.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { LikeModule } from './user/actions/like/like.module';
     BookmarkModule,
     CommentModule,
     LikeModule,
+    NotificationsModule,
+    EventEmitterModule.forRoot(),
   ],
 
   controllers: [AppController],
