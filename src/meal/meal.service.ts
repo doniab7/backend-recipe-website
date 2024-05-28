@@ -2,10 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CrudService } from '../common/service/crud.service';
 import { Meal } from '../entities/meal.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Like, Repository } from 'typeorm';
 import { Ingredient } from 'src/entities/ingredient.entity';
 import { Step } from 'src/entities/step.entity';
 import { User } from 'src/entities/user.entity';
+import { CreateMealDto } from './dto/create-meal.dto';
+import { SearchMealsDto } from './dto/search-meals.dto';
 
 @Injectable()
 export class MealService extends CrudService<Meal> {
@@ -32,11 +34,22 @@ export class MealService extends CrudService<Meal> {
     
     const newMeal = await this.mealRepository.save(meal);
     console.log("hello",newMeal);
-  //  await this.ingredientRepository.save(entity.ingredients);
+   await this.ingredientRepository.save(entity.ingredients);
    await this.stepRepository.save(entity.steps);
    return newMeal;
    
   }
+
+  async searchMeals(term: string): Promise<Meal[]> {
+
+    return await this.mealRepository.createQueryBuilder('meal')
+      .leftJoinAndSelect('meal.category', 'category')
+      .where('meal.name LIKE :term', { term: `%${term}%` })
+      .orWhere('meal.region LIKE :term', { term: `%${term}%` })
+      .orWhere('category.name LIKE :term', { term: `%${term}%` })
+      .getMany();
+  }
+
 
   async update(id: string, updateDto: DeepPartial<Meal>): Promise<Meal> {
     const entity = await this.mealRepository.preload({

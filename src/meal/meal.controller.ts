@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MealService } from './meal.service';
 import { CreateMealDto } from './dto/create-meal.dto';
@@ -20,9 +21,17 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomFileInterceptor } from '../interceptor/fileInterceptor.interceptor';
 import { User as UserEntity } from '../entities/user.entity';
 import { JwtAuthGuard } from '../user/Guards/jwt-auth.guard';
+import { SearchMealsDto } from './dto/search-meals.dto';
+import { Meal } from '../entities/meal.entity';
 @Controller('meal')
 export class MealController {
   constructor(private readonly mealService: MealService) {}
+
+  @Get('search')
+  async searchMeals(@Query('term') term: string): Promise<Meal[]> {
+    console.log(term);
+    return await this.mealService.searchMeals(term);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post()

@@ -100,18 +100,21 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('follow')
-  async follow(@User() user: any, @Body('idWanted') idWanted: string) {
-    try {
-      await this.userService.followUser(user.id, idWanted);
-      return { result: 'ok' };
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
+  @Post('profile/photo')
+  @UseInterceptors(
+    FileInterceptor('photo'),
+    new CustomFileInterceptor(['image/png', 'image/jpeg'], 1000000),
+  )
+  async uploadProfilePhoto(
+    @UploadedFile() file: Express.Multer.File,
+    @User() user,
+  ) {
+    const fileName = await this.userService.uploadFile(file, 'user');
+    const updateuser = new UpdateUserDto();
+    updateuser.ImageProfile = fileName;
+    console.log(updateuser)
+    this.userService.update(user.id, updateuser);
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+    return { fileName };
   }
 }
