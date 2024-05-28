@@ -5,18 +5,15 @@ import {
   Body,
   Param,
   Delete,
-  UseInterceptors,
-  UploadedFile,
   UseGuards,
   NotFoundException,
   UnauthorizedException,
   Patch,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserSubscribeDto } from './dto/user-subscription';
 import { LoginCredentialsDto } from './dto/login-user';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { CustomFileInterceptor } from 'src/interceptor/fileInterceptor.interceptor';
 import { User } from './user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from './Guards/jwt-auth.guard';
@@ -24,19 +21,28 @@ import { JwtAuthGuard } from './Guards/jwt-auth.guard';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@User() user) {
     return user;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('followers')
+  async getFollowers(@User() user) {
+    return this.userService.getFollowers(user.id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('followings')
+  async getFollowings(@User() user) {
+    return this.userService.getFollowings(user.id);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('connected')
   getUserConnected(@User() user) {
     return user;
-  }
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
   }
 
   @Get('email/:email')
@@ -66,7 +72,6 @@ export class UserController {
     @User() user,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    
     const dbuser = await this.userService.findOne(id);
     if (!dbuser) {
       throw new NotFoundException('User not found');
@@ -92,5 +97,21 @@ export class UserController {
       );
     }
     return this.userService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('follow')
+  async follow(@User() user: any, @Body('idWanted') idWanted: string) {
+    try {
+      await this.userService.followUser(user.id, idWanted);
+      return { result: 'ok' };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(id);
   }
 }

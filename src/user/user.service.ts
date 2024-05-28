@@ -14,6 +14,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from './dto/login-user';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MealService } from 'src/meal/meal.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -21,6 +23,7 @@ export class UserService extends CrudService<User> {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private eventEmitter: EventEmitter2,
   ) {
     super(userRepository);
   }
@@ -115,5 +118,59 @@ export class UserService extends CrudService<User> {
     } else {
       throw new Error('Failed to update user');
     }
+  }
+
+  async followUser(followerId, followingId): Promise<void> {
+    const follower = await this.userRepository.findOne({
+      where: { id: followerId },
+      relations: ['following', 'followers'],
+    });
+
+    const wantedUser = await this.userRepository.findOne({
+      where: { id: followingId },
+      relations: ['followers', 'following'],
+    });
+
+    if (!follower || !wantedUser) {
+      throw new Error('User not found');
+    }
+
+    follower.following.push(wantedUser);
+    wantedUser.followers.push(follower);
+
+    await this.userRepository.save(follower);
+    await this.userRepository.save(wantedUser);
+
+    // Emit the follow notification event with updated followers and following arrays
+    this.eventEmitter.emit('follow', {
+      eventType: 'new-follower',
+      followerId,
+      followingId,
+    });
+  }
+  async getFollowers(userId: string): Promise<User[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['followers'],
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.followers;
+  }
+
+  async getFollowings(userId: string): Promise<User[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.following;
   }
 }
