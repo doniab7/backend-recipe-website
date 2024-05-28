@@ -10,6 +10,8 @@ import {
   UnauthorizedException,
   Patch,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserSubscribeDto } from './dto/user-subscription';
@@ -17,6 +19,8 @@ import { LoginCredentialsDto } from './dto/login-user';
 import { User } from './user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from './Guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CustomFileInterceptor } from 'src/interceptor/fileInterceptor.interceptor';
 
 @Controller('user')
 export class UserController {
@@ -112,9 +116,24 @@ export class UserController {
     const fileName = await this.userService.uploadFile(file, 'user');
     const updateuser = new UpdateUserDto();
     updateuser.ImageProfile = fileName;
-    console.log(updateuser)
+    console.log(updateuser);
     this.userService.update(user.id, updateuser);
 
     return { fileName };
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('follow')
+  async follow(@User() user: any, @Body('idWanted') idWanted: string) {
+    try {
+      await this.userService.followUser(user.id, idWanted);
+      return { result: 'ok' };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(id);
   }
 }

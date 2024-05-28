@@ -18,7 +18,6 @@ export class FollowController {
           data.followerId === id || data.followingId! === id,
       ),
       map((data) => {
-        console.log(data);
         return new MessageEvent('message', { data });
       }),
     );

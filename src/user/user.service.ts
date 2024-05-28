@@ -121,6 +121,9 @@ export class UserService extends CrudService<User> {
   }
 
   async followUser(followerId, followingId): Promise<void> {
+    if (followerId === followingId) {
+      throw new Error('same user');
+    }
     const follower = await this.userRepository.findOne({
       where: { id: followerId },
       relations: ['following', 'followers'],
